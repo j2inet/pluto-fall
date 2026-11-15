@@ -1,5 +1,8 @@
 #include "game.h"
 
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
 #include <cassert>
 
 using namespace pluto;

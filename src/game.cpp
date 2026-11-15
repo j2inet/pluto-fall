@@ -6,7 +6,7 @@
 namespace pluto {
 namespace {
 bool close(float x1, float y1, float x2, float y2, float radius) {
-    const float dx = x1 - x2, dy = y1 - y2;
+    const float dx = (x1 - x2) * (1280.0f / 720.0f), dy = y1 - y2;
     return dx * dx + dy * dy <= radius * radius;
 }
 }
@@ -72,6 +72,11 @@ void Game::update(float elapsed, const std::array<Input, max_devices>& input) {
     }
     if (screen_ == Screen::select) {
         if (combined.menu) { return_to_title(); return; }
+        const auto all_joined_players_ready = [this] {
+            return std::any_of(players_.begin(), players_.end(), [](const Player& p) { return p.joined; }) &&
+                std::all_of(players_.begin(), players_.end(), [](const Player& p) { return !p.joined || p.ready; });
+        };
+        if (combined.start && all_joined_players_ready()) { begin_game(); return; }
         for (std::size_t device = 0; device < input.size(); ++device) {
             const auto& in = input[device];
             auto player = std::find_if(players_.begin(), players_.end(), [device](const Player& p) {
@@ -96,9 +101,7 @@ void Game::update(float elapsed, const std::array<Input, max_devices>& input) {
                 if (in.fire_pressed) player->ready = true;
             }
         }
-        const bool any = std::any_of(players_.begin(), players_.end(), [](const Player& p) { return p.joined; });
-        const bool all_ready = std::all_of(players_.begin(), players_.end(), [](const Player& p) { return !p.joined || p.ready; });
-        if (any && all_ready && combined.start) begin_game();
+        if (combined.start && all_joined_players_ready()) begin_game();
         return;
     }
 

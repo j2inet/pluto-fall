@@ -71,4 +71,21 @@ int main() {
     game.update(0, input);
     assert(game.take_website_request());
     assert(!game.take_website_request());
+
+    Game controller_game;
+    input = {};
+    input[1].start = true;
+    controller_game.update(0, input);
+    input = {};
+    input[1].join = true;
+    controller_game.update(0, input);
+    input = {};
+    input[1].fire_pressed = true;
+    controller_game.update(0, input);
+    input = {};
+    input[0].start = input[0].join = true;
+    controller_game.update(0, input);
+    assert(controller_game.screen() == Screen::playing);
+    assert(controller_game.players()[0].device == 1);
+    assert(!controller_game.players()[1].joined);
 }

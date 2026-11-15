@@ -124,7 +124,7 @@ public:
                 D3D11_CREATE_DEVICE_BGRA_SUPPORT, nullptr, 0, D3D11_SDK_VERSION, &desc,
                 &swap_chain_, &device_, nullptr, &context_));
         }
-        check(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory_));
+        check(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, factory_.GetAddressOf()));
         check(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
             reinterpret_cast<IUnknown**>(write_factory_.GetAddressOf())));
         check(write_factory_->CreateTextFormat(L"Segoe UI", nullptr, DWRITE_FONT_WEIGHT_NORMAL,
